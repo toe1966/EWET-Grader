@@ -1,0 +1,92 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="text-center mb-4">
+            <h1 class="display-4">AI Essay Grader</h1>
+            <p class="lead">Upload your essay (.docx) to get AI-powered feedback and grading</p>
+        </div>
+
+        <div class="upload-area mb-4">
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                    <h4>Choose Essay File</h4>
+                    <p class="text-muted">Select a .docx file containing your essay</p>
+                    <input type="file" class="form-control" name="file" accept=".docx" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-upload"></i> Upload and Grade Essay
+                </button>
+            </form>
+        </div>
+
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-upload fa-2x text-primary mb-2"></i>
+                        <h6>Upload</h6>
+                        <small class="text-muted">Upload your .docx essay file</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-robot fa-2x text-success mb-2"></i>
+                        <h6>AI Analysis</h6>
+                        <small class="text-muted">Get comprehensive feedback</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                        <h6>Grading</h6>
+                        <small class="text-muted">Receive detailed scores</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <i class="fas fa-download fa-2x text-info mb-2"></i>
+                        <h6>Download</h6>
+                        <small class="text-muted">Get PDF feedback report</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5>Grading Criteria:</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>Content Analysis, Originality, and Critical Thinking (30%)</strong>
+                    <br><small class="text-muted">Relevance, depth of analysis, originality, and use of evidence</small>
+                </li>
+                <li class="list-group-item">
+                    <strong>Structure and Organization (30%)</strong>
+                    <br><small class="text-muted">Introduction with thesis, logical flow, topic sentences, and conclusion</small>
+                </li>
+                <li class="list-group-item">
+                    <strong>Source Crediting and Paraphrasing (10%)</strong>
+                    <br><small class="text-muted">Proper paraphrasing and crediting of sources</small>
+                </li>
+                <li class="list-group-item">
+                    <strong>Language and Grammar (30%)</strong>
+                    <br><small class="text-muted">Clarity, effectiveness, and grammatical correctness</small>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}
