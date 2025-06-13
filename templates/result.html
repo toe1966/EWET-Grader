@@ -1,1 +1,35 @@
 
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-check-circle text-success"></i> Essay Graded Successfully!</h2>
+            <p class="lead">Your essay "{{ filename }}.docx" has been analyzed</p>
+        </div>
+        
+        <div class="text-center mb-4">
+            <a href="{{ url_for('download_feedback', task_id=task_id) }}" 
+               class="btn btn-success btn-lg me-3">
+                <i class="fas fa-download"></i> Download PDF Report
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-plus"></i> Grade Another Essay
+            </a>
+        </div>
+        
+        <div class="feedback-content">
+            <h4 class="mb-3"><i class="fas fa-robot text-primary"></i> AI Feedback & Grading</h4>
+            <div style="white-space: pre-wrap; line-height: 1.6;">{{ feedback }}</div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <small class="text-muted">
+                <i class="fas fa-info-circle"></i> 
+                Feedback is automatically saved and can be downloaded as PDF
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}
