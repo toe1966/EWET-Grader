@@ -39,10 +39,10 @@ def extract_text_from_docx(file_path):
     except Exception as e:
         raise Exception(f"Failed to read document: {str(e)}")
 
-def grade_essay_with_ai(essay_content, task_id):
+def grade_essay_with_ai(essay_content, task_id, filename):
     """Grade essay using OpenAI API"""
     try:
-        processing_status[task_id] = {"status": "processing", "progress": "Connecting to AI..."}
+        processing_status[task_id] = {"status": "processing", "progress": "Connecting to AI...", "filename": filename}
         
         if not os.getenv("OPENAI_API_KEY"):
             processing_status[task_id] = {"status": "error", "message": "OpenAI API key not configured"}
@@ -50,7 +50,7 @@ def grade_essay_with_ai(essay_content, task_id):
         
         client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
-        processing_status[task_id] = {"status": "processing", "progress": "Analyzing essay..."}
+        processing_status[task_id].update({"status": "processing", "progress": "Analyzing essay..."})
         
         system_prompt = """You are an English language instructor evaluating undergraduate entrance essays responding to the following question:
 "Mythology does not inspire creativity as it only encourages the recycling of old stories." Do you agree?
@@ -87,8 +87,13 @@ You must provide:
         )
         
         feedback = response.choices[0].message.content
-        processing_status[task_id].update({"status": "completed", "feedback": feedback})
-        return feedback
+        # After getting feedback
+        processing_status[task_id].update({
+            "status": "completed",
+            "feedback": feedback,
+            "filename": processing_status[task_id].get("filename", "unknown")
+        })
+
         
     except Exception as e:
         processing_status[task_id].update({"status": "error", "message": str(e)})
@@ -185,7 +190,7 @@ def upload_file():
             
             threading.Thread(
                 target=grade_essay_with_ai, 
-                args=(essay_content, task_id), 
+                args=(essay_content, task_id, base_name), 
                 daemon=True
             ).start()
             
