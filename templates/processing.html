@@ -1,1 +1,81 @@
 
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="text-center">
+            <div class="processing-animation">
+                <i class="fas fa-cog fa-3x text-primary"></i>
+            </div>
+            <h2 class="mt-3">Processing Your Essay</h2>
+            <p class="lead">Please wait while our AI analyzes and grades your essay...</p>
+            
+            <div class="progress mb-4" style="height: 20px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" style="width: 0%" id="progress-bar">
+                </div>
+            </div>
+            
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>File: {{ filename }}.docx</h5>
+                    <p id="status-message">Starting analysis...</p>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <small class="text-muted">This usually takes 30-60 seconds</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const taskId = "{{ task_id }}";
+    let progress = 0;
+    
+    function updateProgress() {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        document.getElementById('progress-bar').style.width = progress + '%';
+    }
+    
+    function checkStatus() {
+        fetch(`/status/${taskId}`)
+            .then(response => response.json())
+            .then(data => {
+                const statusMessage = document.getElementById('status-message');
+                
+                if (data.status === 'processing') {
+                    statusMessage.textContent = data.progress || 'Processing...';
+                    updateProgress();
+                    setTimeout(checkStatus, 2000);
+                } else if (data.status === 'completed') {
+                    document.getElementById('progress-bar').style.width = '100%';
+                    statusMessage.textContent = 'Analysis complete! Redirecting...';
+                    setTimeout(() => {
+                        window.location.href = `/result/${taskId}`;
+                    }, 1500);
+                } else if (data.status === 'error') {
+                    statusMessage.innerHTML = `<span class="text-danger">Error: ${data.message}</span>`;
+                    document.getElementById('progress-bar').classList.add('bg-danger');
+                } else {
+                    setTimeout(checkStatus, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setTimeout(checkStatus, 3000);
+            });
+    }
+    
+    // Start checking status
+    setTimeout(checkStatus, 1000);
+    
+    // Update progress animation
+    setInterval(updateProgress, 1000);
+</script>
+{% endblock %}
